@@ -38,7 +38,7 @@ A few example builds, with minimal configuration options.
 
 ```shell
 mkdir build; cd build
-cmake -DUSE_MPI=OFF -DKokkos_ENABLE_OPENMP=ON -DKokkos_ENABLE_HWLOC=ON ..
+cmake -DUSE_MPI=OFF -DKokkos_ENABLE_OPENMP=ON -DKokkos_ENABLE_HWLOC=OFF -DUSE_SDM=ON ..
 make -j 4
 ```
 
@@ -65,7 +65,9 @@ kokkos source (external/kokkos/bin/nvcc_wrapper).
 ```shell
 mkdir build; cd build
 export CXX=/path/to/nvcc_wrapper
-cmake -DUSE_MPI=OFF -DKokkos_ENABLE_CUDA=ON -DKokkos_ARCH_MAXWELL50=ON ..
+cmake -DUSE_MPI=OFF -DKokkos_ENABLE_CUDA=ON -DKokkos_ARCH_PASCAL61=ON ..
+cmake -DUSE_MPI=OFF -DKokkos_ENABLE_CUDA=ON -DKokkos_ARCH_PASCAL61=ON -DUSE_SDM=ON ..
+cmake -DUSE_MPI=OFF -DKokkos_ENABLE_CUDA=ON -DKokkos_ARCH_PASCAL61=ON -DUSE_SDM=ON -DUSE_MOOD=ON ..
 make -j 4
 ```
 
@@ -84,7 +86,7 @@ You don't need to use mpi compiler wrapper mpicxx, cmake *should* be able to cor
 ```shell
 mkdir build; cd build
 export CXX=/path/to/nvcc_wrapper
-cmake -DUSE_MPI=ON -DKokkos_ENABLE_CUDA=ON -DKokkos_ARCH_MAXWELL50=ON ..
+cmake -DUSE_MPI=ON -DKokkos_ENABLE_CUDA=ON -DKokkos_ARCH_MAXWELL50=ON -DUSE_SDM=ON ..
 make -j 4
 ```
 
