@@ -579,11 +579,55 @@ KOKKOS_INLINE_FUNCTION void riemann_slau(const HydroState& qleft,
   real_t cfastl = SQRT(fmax(gamma0 * pl / rl, smallc * smallc));
   real_t cfastr = SQRT(fmax(gamma0 * pr / rr, smallc * smallc));
 
+  // Compute HLL wave speed
+  real_t SL = fmin(ul, ur) - fmax(cfastl, cfastr);
+  real_t SR = fmax(ul, ur) + fmax(cfastl, cfastr);
 
-  real_t mass;
+  // Compute lagrangian sound speed
+  real_t rcl = rl * (ul - SL);
+  real_t rcr = rr * (SR - ur);
+
+  // Compute acoustic star state
+  real_t ustar = (rcr * ur + rcl * ul + (ptotl - ptotr)) / (rcr + rcl);
+  real_t ptotstar =
+      (rcr * ptotl + rcl * ptotr + rcl * rcr * (ul - ur)) / (rcr + rcl);
+
+  // Left star region variables
+  real_t rstarl = rl * (SL - ul) / (SL - ustar);
+  real_t etotstarl =
+      ((SL - ul) * etotl - ptotl * ul + ptotstar * ustar) / (SL - ustar);
+
+  // Right star region variables
+  real_t rstarr = rr * (SR - ur) / (SR - ustar);
+  real_t etotstarr =
+      ((SR - ur) * etotr - ptotr * ur + ptotstar * ustar) / (SR - ustar);
+
+  // Sample the solution at x/t=0
+  real_t ro, uo, ptoto, etoto;
+  if (SL > ZERO_F) {
+    ro = rl;
+    uo = ul;
+    ptoto = ptotl;
+    etoto = etotl;
+  } else if (ustar > ZERO_F) {
+    ro = rstarl;
+    uo = ustar;
+    ptoto = ptotstar;
+    etoto = etotstarl;
+  } else if (SR > ZERO_F) {
+    ro = rstarr;
+    uo = ustar;
+    ptoto = ptotstar;
+    etoto = etotstarr;
+  } else {
+    ro = rr;
+    uo = ur;
+    ptoto = ptotr;
+    etoto = etotr;
+  }
 
   // Compute the Godunov flux
-  flux[ID] = mass;
+  flux[ID] = ro * uo;
   flux[IU] = ro * uo * uo + ptoto;
   flux[IP] = (etoto + ptoto) * uo;
   if (flux[ID] > ZERO_F) {
