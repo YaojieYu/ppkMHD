@@ -126,7 +126,8 @@ enum RiemannSolverType {
   RIEMANN_LLF,    /*!< LLF Local Lax-Friedrich */
   RIEMANN_HLL,    /*!< HLL hydro and MHD Riemann solver */
   RIEMANN_HLLC,   /*!< HLLC hydro-only Riemann solver */
-  RIEMANN_HLLD    /*!< HLLD MHD-only Riemann solver */
+  RIEMANN_HLLD,    /*!< HLLD MHD-only Riemann solver */
+  RIEMANN_SLAU
 };
 
 //! type of boundary condition (note that BC_COPY is only used in the
